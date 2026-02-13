@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine Surprise 💖</title>
 <style>
-    /* Body and background */
     body {
         margin: 0;
         padding: 0;
@@ -103,70 +102,76 @@
         box-shadow: 0 8px 16px rgba(0,0,0,0.4);
     }
 
-    /* Envelope */
-    #envelope {
+    /* Envelope container */
+    #envelopeContainer {
         width: 220px;
         height: 150px;
+        position: relative;
+        perspective: 800px;
+        cursor: pointer;
+    }
+
+    #envelope {
+        width: 100%;
+        height: 100%;
         background: #fff0f5;
         border: 2px solid #d6336c;
         border-radius: 12px;
         position: relative;
-        cursor: pointer;
-        transform-style: preserve-3d;
-        transition: transform 1s ease;
+        overflow: hidden;
         display: flex;
         justify-content: center;
-        align-items: center;
-        perspective: 800px;
+        align-items: flex-end;
         box-shadow: 0 0 30px rgba(255, 102, 153, 0.5);
+        transition: transform 1s ease;
     }
 
-    /* Flap */
-    #envelope::before {
-        content: "";
+    /* Envelope flap */
+    #flap {
         position: absolute;
-        top: -50%;
+        top: 0;
         left: 0;
         width: 100%;
-        height: 100%;
+        height: 50%;
         background: #ffb6c1;
         border-bottom: 2px solid #d6336c;
         border-radius: 12px 12px 0 0;
-        transform-origin: bottom center;
-        transform: rotateX(0deg);
+        transform-origin: top;
         transition: transform 1s ease;
         z-index: 2;
         box-shadow: 0 0 15px rgba(255, 102, 153, 0.7);
     }
 
-    #envelope.open::before {
+    #envelope.open #flap {
         transform: rotateX(-180deg);
     }
 
+    /* Letter */
     #letterContent {
         opacity: 0;
         padding: 15px;
         color: #d6336c;
         text-align: center;
-        transition: opacity 1s ease;
+        transition: opacity 0.5s ease, transform 1s ease;
         max-width: 200px;
         font-size: 1rem;
         line-height: 1.4;
+        position: relative;
+        transform: translateY(100%);
     }
 
     #envelope.open #letterContent {
         opacity: 1;
+        transform: translateY(0);
     }
 
     .typing {
         white-space: pre-wrap;
     }
-
 </style>
 </head>
 <body>
 
-<!-- Slides -->
 <div id="slide1">
     <h1>Will you be my Valentine, my love? 💖</h1>
     <div>
@@ -177,8 +182,11 @@
 
 <div id="slide2">
     <h1>Open your love letter 💌</h1>
-    <div id="envelope">
-        <div id="letterContent" class="typing"></div>
+    <div id="envelopeContainer">
+        <div id="envelope">
+            <div id="flap"></div>
+            <div id="letterContent" class="typing"></div>
+        </div>
     </div>
 </div>
 
@@ -208,9 +216,8 @@
 
     const loveLetter = `Dear valentine baby,
 
-I asked myself, have I really made your heart filled with love... and then I realized how stupid of a question this is because you are literally my reason to celebrate everything with and show all of my love towards. My love, in this special day I want you to know that I love you so much, and you are my valentine baby for the rest of my life. I promise I will fill you with love every 14th of Feb, actually every day I will. I'm sorry for the times I haven't done what you expected, or have fallen short of your expectations, but I just want you to know I'm trying my best to show you how I feel.
-
-Forever yours, 💖`;
+I asked myself, have I really made your heart filled with love... and then it suddenly strikes my head of all the times ive made u smile , of all the times ive made u laugh , all the times i made ur stomach happy , and every time u told me ILY . My love , i promise to shower u with all my love no matter what it takes , youre not just gonna be my valentine today but every single day for the rest of my life . I want u to know that ur boy loves u soo much and i want u to fucking know what youre so freaking BEAUTIFUL ill tell it a million times . This is just one thing that im doing for u , i hope u like it buj. MUAH
+Forever yours, dudu💖`;
 
     // YES click
     yesBtn.addEventListener('click', () => {
@@ -228,7 +235,7 @@ Forever yours, 💖`;
         yesBtn.style.transform = `scale(${1 + (1-noShrink)})`;
     });
 
-    // Envelope open + typing effect
+    // Envelope click: flap open + letter slide + typing effect
     envelope.addEventListener('click', () => {
         envelope.classList.toggle('open');
         if (envelope.classList.contains('open')) {
@@ -238,7 +245,7 @@ Forever yours, 💖`;
                 letterContent.textContent += loveLetter[index];
                 index++;
                 if (index >= loveLetter.length) clearInterval(interval);
-            }, 25); // typing speed
+            }, 25);
         } else {
             letterContent.textContent = '';
         }
