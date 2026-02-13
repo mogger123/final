@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine Surprise 💖</title>
+<style>
+    /* Body and background */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        perspective: 1000px;
+        background: linear-gradient(120deg, #ffe6f0, #fff0f5, #ffd6e8, #ffe6f0);
+        background-size: 400% 400%;
+        animation: bgGradient 15s ease infinite;
+    }
+
+    @keyframes bgGradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Floating hearts */
+    .heart {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: red;
+        transform: rotate(45deg);
+        animation: float linear infinite;
+        filter: drop-shadow(0 0 5px pink);
+    }
+
+    .heart::before,
+    .heart::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: red;
+        border-radius: 50%;
+    }
+
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: 10px; top: 0; }
+
+    @keyframes float {
+        0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0.6; }
+        50% { opacity: 1; filter: drop-shadow(0 0 8px white); }
+        100% { transform: translateY(-200px) rotate(360deg) scale(1.2); opacity: 0; }
+    }
+
+    /* Slides */
+    #slide1, #slide2 {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 1s ease;
+    }
+
+    #slide2 {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    h1 {
+        color: #d6336c;
+        font-size: 3rem;
+        text-align: center;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 10px pink;
+    }
+
+    /* Buttons */
+    button {
+        padding: 15px 30px;
+        margin: 10px;
+        font-size: 1.5rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        font-weight: bold;
+        color: white;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    #yesBtn { background-color: #ff3366; }
+    #noBtn { background-color: #ff6699; }
+
+    button:hover {
+        box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    }
+
+    /* Envelope */
+    #envelope {
+        width: 220px;
+        height: 150px;
+        background: #fff0f5;
+        border: 2px solid #d6336c;
+        border-radius: 12px;
+        position: relative;
+        cursor: pointer;
+        transform-style: preserve-3d;
+        transition: transform 1s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        perspective: 800px;
+        box-shadow: 0 0 30px rgba(255, 102, 153, 0.5);
+    }
+
+    /* Flap */
+    #envelope::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffb6c1;
+        border-bottom: 2px solid #d6336c;
+        border-radius: 12px 12px 0 0;
+        transform-origin: bottom center;
+        transform: rotateX(0deg);
+        transition: transform 1s ease;
+        z-index: 2;
+        box-shadow: 0 0 15px rgba(255, 102, 153, 0.7);
+    }
+
+    #envelope.open::before {
+        transform: rotateX(-180deg);
+    }
+
+    #letterContent {
+        opacity: 0;
+        padding: 15px;
+        color: #d6336c;
+        text-align: center;
+        transition: opacity 1s ease;
+        max-width: 200px;
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+
+    #envelope.open #letterContent {
+        opacity: 1;
+    }
+
+    .typing {
+        white-space: pre-wrap;
+    }
+
+</style>
+</head>
+<body>
+
+<!-- Slides -->
+<div id="slide1">
+    <h1>Will you be my Valentine, my love? 💖</h1>
+    <div>
+        <button id="yesBtn">YES</button>
+        <button id="noBtn">NO</button>
+    </div>
+</div>
+
+<div id="slide2">
+    <h1>Open your love letter 💌</h1>
+    <div id="envelope">
+        <div id="letterContent" class="typing"></div>
+    </div>
+</div>
+
+<script>
+    // Floating hearts
+    function createHearts() {
+        for (let i = 0; i < 50; i++) {
+            let heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.animationDuration = 4 + Math.random() * 6 + 's';
+            heart.style.width = 10 + Math.random() * 25 + 'px';
+            heart.style.height = heart.style.width;
+            heart.style.background = `hsl(${Math.random()*360}, 70%, 60%)`;
+            heart.style.opacity = Math.random() * 0.8 + 0.2;
+            document.body.appendChild(heart);
+        }
+    }
+    createHearts();
+
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const slide1 = document.getElementById('slide1');
+    const slide2 = document.getElementById('slide2');
+    const envelope = document.getElementById('envelope');
+    const letterContent = document.getElementById('letterContent');
+
+    const loveLetter = `Dear valentine baby,
+
+I asked myself, have I really made your heart filled with love... and then I realized how stupid of a question this is because you are literally my reason to celebrate everything with and show all of my love towards. My love, in this special day I want you to know that I love you so much, and you are my valentine baby for the rest of my life. I promise I will fill you with love every 14th of Feb, actually every day I will. I'm sorry for the times I haven't done what you expected, or have fallen short of your expectations, but I just want you to know I'm trying my best to show you how I feel.
+
+Forever yours, 💖`;
+
+    // YES click
+    yesBtn.addEventListener('click', () => {
+        slide1.style.opacity = 0;
+        slide1.style.pointerEvents = 'none';
+        slide2.style.opacity = 1;
+        slide2.style.pointerEvents = 'all';
+    });
+
+    // NO shrinks, YES grows
+    let noShrink = 1;
+    noBtn.addEventListener('click', () => {
+        noShrink *= 0.85;
+        noBtn.style.transform = `scale(${noShrink})`;
+        yesBtn.style.transform = `scale(${1 + (1-noShrink)})`;
+    });
+
+    // Envelope open + typing effect
+    envelope.addEventListener('click', () => {
+        envelope.classList.toggle('open');
+        if (envelope.classList.contains('open')) {
+            letterContent.textContent = '';
+            let index = 0;
+            const interval = setInterval(() => {
+                letterContent.textContent += loveLetter[index];
+                index++;
+                if (index >= loveLetter.length) clearInterval(interval);
+            }, 25); // typing speed
+        } else {
+            letterContent.textContent = '';
+        }
+    });
+</script>
+
+</body>
+</html>
